@@ -1,25 +1,83 @@
 # Tomcat
 server: 
   port: 9200
+  max-http-header-size: 10240
 
 # Spring
-spring: 
+spring:
+  servlet:
+    multipart:
+      max-request-size: 150MB
+      max-file-size: 100MB
+  jackson:
+    time-zone: GMT+8
+  main:
+    allow-bean-definition-overriding: true
   application:
     # 应用名称
     name: ruoyi-auth
   profiles:
     # 环境配置
-    active: dev
+    active: @spring.active@
+#  cloud:
+#    nacos:
+#      discovery:
+#        # 服务注册地址
+#        server-addr: http://124.220.31.187:8848
+#      config:
+#        # 配置中心地址
+#        server-addr: http://124.220.31.187:8848
+#        # 配置文件格式
+#        file-extension: yml
+#        # 共享配置
+#        shared-configs:
+#          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+
+---
+spring:
+  profiles: local
   cloud:
     nacos:
-      discovery:
-        # 服务注册地址
-        server-addr: 127.0.0.1:8848
+      username: nacos
+      password: nacos
       config:
         # 配置中心地址
-        server-addr: 127.0.0.1:8848
+        server-addr: http://124.220.31.187:8848
+        namespace: 521a9a7d-172b-4b14-9d1d-2d3725fef572
+#        extension-configs:
+#          - data-id: database.yml  # 数据库配置
+#            refresh: true
         # 配置文件格式
         file-extension: yml
         # 共享配置
         shared-configs:
-          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+          - application-${spring.active}.${spring.cloud.nacos.config.file-extension}
+        group: DEFAULT_GROUP
+      discovery:
+        server-addr: http://124.220.31.187:8848
+        namespace: 521a9a7d-172b-4b14-9d1d-2d3725fef572
+        group: DEFAULT_GROUP
+---
+spring:
+  profiles: dev
+  cloud:
+    nacos:
+      username: nacos
+      password: nacos
+      config:
+        # 配置中心地址
+        server-addr: http://124.220.31.187:8848
+        namespace: d6c891bd-048a-45b1-be3a-59d5d9c60f94
+#        extension-configs:
+#          - data-id: database.yml  # 数据库配置
+#            refresh: true
+        # 配置文件格式
+        file-extension: yml
+        group: DEFAULT_GROUP
+        # 共享配置
+        shared-configs:
+          - application-${spring.active}.${spring.cloud.nacos.config.file-extension}
+      discovery:
+        server-addr: http://124.220.31.187:8848
+        namespace: d6c891bd-048a-45b1-be3a-59d5d9c60f94
+        group: DEFAULT_GROUP
